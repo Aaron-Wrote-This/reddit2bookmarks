@@ -1,49 +1,45 @@
 import urllib2, cookielib, re
 import ClientForm
 
-class bookmark:
+
+class Bookmark:
     def __init__(self, url, name):
-        self.url=url
+        self.url = url
         self.name=name
-    def printline(self):
-	print "%s  %s" % (self.name, self.url)
+
+    def __repr__(self):
+        print("%s  %s" % (self.name, self.url))
 
         
-class redditreader:
-    bookmarks= list();
+class RedditReader:
+
+    bookmarks = list()
     def __init__(self, username, password):
         self.username= username    
         self.password = password
         self.url = 'http://www.reddit.com/saved'
 
-        cookiejar = cookielib.LWPCookieJar()
-        cookiejar = urllib2.HTTPCookieProcessor(cookiejar)
+        cookie_jar = cookielib.LWPCookieJar()
+        cookie_jar = urllib2.HTTPCookieProcessor(cookie_jar)
         # debugger = urllib2.HTTPHandler(debuglevel=1)
 
-        opener = urllib2.build_opener(cookiejar)
+        opener = urllib2.build_opener(cookie_jar)
         urllib2.install_opener(opener)
 
-    #def login(self):
+
         response = urllib2.urlopen(self.url)
         forms = ClientForm.ParseResponse(response, backwards_compat=False)
 
-
         form = forms[1]
-
         try:
             form['user'] = self.username
             form['passwd'] = self.password
         except Exception, e:
-            print 'Got an error: \n"%s"' % e
+            print('Got an error: \n"%s"' % e)
            
             exit()
 
         self.page = urllib2.urlopen(form.click()).read()
-	
-	#print self.page;
-	print 'gotpage'
-   
-
 
  
 	#this didn't work
@@ -53,11 +49,17 @@ class redditreader:
         links = pattern.findall(self.page)
 
         for link in links:
-            bookmark1 = bookmark(link[1], link[0]);
+            bookmark1 = Bookmark(link[1], link[0]);
             print bookmark1.name;
             print bookmark1.url;
-            bookmark1.printline()
+            bookmark1.__repr__()
             bookmarks.append(bookmark1);
 
-redditread = redditreader('username', 'password')
+
+if __name__ == '__main__':
+
+
+    redditread = RedditReader(username, password)
+
+
 
